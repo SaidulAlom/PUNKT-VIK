@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --bg-paper: #F7F6F3;
+    --text-ink: #111110;
+    --border-hairline: rgba(17, 17, 16, 0.12);
+    --accent-color: #D9A441;
+    --font-display: 'Syne', 'Plus Jakarta Sans', sans-serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  .dark {
+    --bg-paper: #0B0B0A;
+    --text-ink: #F2F1EE;
+    --border-hairline: rgba(242, 241, 238, 0.12);
+  }
+
+  body {
+    background-color: var(--bg-paper);
+    color: var(--text-ink);
+    font-family: var(--font-sans);
+    transition: background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1), color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow-x: hidden;
+  }
+}
+
+/* CSS Keyframe Animations for Theme Cross-Fade Toggle */
+@keyframes theme-crossfade-to-dark {
+  0% {
+    background-color: #F7F6F3;
+    color: #111110;
+    opacity: 0.93;
+    filter: brightness(1.05);
+  }
+  40% {
+    opacity: 0.97;
+    filter: brightness(0.95);
+  }
+  100% {
+    background-color: #0B0B0A;
+    color: #F2F1EE;
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes theme-crossfade-to-light {
+  0% {
+    background-color: #0B0B0A;
+    color: #F2F1EE;
+    opacity: 0.93;
+    filter: brightness(0.95);
+  }
+  40% {
+    opacity: 0.97;
+    filter: brightness(1.05);
+  }
+  100% {
+    background-color: #F7F6F3;
+    color: #111110;
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+/* Trigger keyframe animation when theme is toggled */
+html.dark.theme-crossfade-active body {
+  animation: theme-crossfade-to-dark 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+html:not(.dark).theme-crossfade-active body {
+  animation: theme-crossfade-to-light 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Universal color and border transition for seamless typography & UI cross-fading */
+*, *::before, *::after {
+  transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Custom Typography Utilities */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-data {
+  font-family: var(--font-mono);
+}
+
+/* Text Stroke utilities for outlined marquee text */
+.text-stroke-light {
+  -webkit-text-stroke: 1.5px rgba(17, 17, 16, 0.35);
+  color: transparent;
+}
+
+.dark .text-stroke-light {
+  -webkit-text-stroke: 1.5px rgba(242, 241, 238, 0.35);
+  color: transparent;
+}
+
+.text-stroke-hover {
+  transition: all 0.3s ease;
+}
+
+.text-stroke-hover:hover {
+  -webkit-text-stroke: 1.5px var(--text-ink);
+  color: var(--text-ink);
+}
+
+/* Marquee Infinite Animation */
+@keyframes marquee-slide {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hairline borders */
+.border-hairline {
+  border-color: var(--border-hairline);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-paper);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.25);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.5);
+}
+
+/* Smooth Link Underline Drawer */
+.hover-underline-link {
+  position: relative;
+}
+.hover-underline-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-underline-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Clip mask reveal animation helper */
+.mask-reveal-up {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation-duration: 120s;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
